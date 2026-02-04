@@ -330,11 +330,11 @@ public class Odometry implements DataLogger {
     /// @return The new Φ value
     private Angle phiEncoder() {
         double l = Math.abs(Geometry.subtract(displacement.get(Orientation.LEFT), displacement.get(Orientation.RIGHT)).x());
-        phi = Angle.degree((((delta.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT) -
+        phi = Angle.radian((((delta.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT) -
                 delta.get(Orientation.LEFT) * unitPerTick.get(Orientation.LEFT)))
                 / l) * (180.0 / Math.PI) * -1.0);
         //compensates for previous error
-        Angle diff = Geometry.subtract(Geometry.add(Angle.degree((((last.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT)
+        Angle diff = Geometry.subtract(Geometry.add(Angle.radian((((last.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT)
                 - last.get(Orientation.LEFT) * unitPerTick.get(Orientation.LEFT))) / l) * (180.0 / Math.PI) * -1.0), startPose.angle), this.pose.angle);
         phi = Geometry.add(diff, phi);
         return phi;
