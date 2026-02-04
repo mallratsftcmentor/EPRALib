@@ -4,12 +4,12 @@
     "endCondition": "AT_TARGET",
     "driveTrainModule": {
       "driveMode": "precise_targeted_drive",
-      "maxPower": 0.5,
-      "x": 0.0,
-      "y": 0.0,
-      "angle": 0.0,
-      "posTolerance": 0.5,
-      "angleTolerance": 0.5
+      "maxPower": { "val": 0.5 },
+      "x": { "val": 0.0 },
+      "y": { "val": 0.0 },
+      "angle": { "val": 0.0 },
+      "posTolerance": { "val": 0.5 },
+      "angleTolerance": { "val": 0.5 }
     },
     "motorControllerModules": []
   },
@@ -18,12 +18,12 @@
     "endCondition": "AT_TARGET",
     "driveTrainModule": {
       "driveMode": "precise_targeted_drive",
-      "maxPower": 1.0,
-      "x": 48.0,
-      "y": 0.0,
-      "angle": 0.0,
-      "posTolerance": 0.25,
-      "angleTolerance": 0.5
+      "maxPower": { "val": 1.0 },
+      "x": { "val": 48.0 },
+      "y": { "val": 0.0 },
+      "angle": { "val": 0.0 },
+      "posTolerance": { "val": 0.25 },
+      "angleTolerance": { "val": 0.5 }
     },
     "motorControllerModules": []
   },
@@ -32,12 +32,12 @@
     "endCondition": "AT_TARGET",
     "driveTrainModule": {
       "driveMode": "precise_targeted_drive",
-      "maxPower": 1.0,
-      "x": 0.0,
-      "y": 48.0,
-      "angle": 0.0,
-      "posTolerance": 0.25,
-      "angleTolerance": 0.5
+      "maxPower": { "val": 1.0 },
+      "x": { "val": 0.0 },
+      "y": { "val": 48.0 },
+      "angle": { "val": 0.0 },
+      "posTolerance": { "val": 0.25 },
+      "angleTolerance": { "val": 0.5 }
     },
     "motorControllerModules": []
   },
@@ -46,12 +46,12 @@
     "endCondition": "AT_TARGET",
     "driveTrainModule": {
       "driveMode": "precise_targeted_drive",
-      "maxPower": 1.0,
-      "x": 48.0,
-      "y": 48.0,
-      "angle": 0.0,
-      "posTolerance": 0.25,
-      "angleTolerance": 0.5
+      "maxPower": { "val": 1.0 },
+      "x": { "val": 48.0 },
+      "y": { "val": 48.0 },
+      "angle": { "val": 0.0 },
+      "posTolerance": { "val": 0.25 },
+      "angleTolerance": { "val": 0.5 }
     },
     "motorControllerModules": []
   },
@@ -60,12 +60,12 @@
     "endCondition": "AT_TARGET",
     "driveTrainModule": {
       "driveMode": "precise_targeted_drive",
-      "maxPower": 1.0,
-      "x": 0.0,
-      "y": 0.0,
-      "angle": 0.0,
-      "posTolerance": 0.25,
-      "angleTolerance": 0.5
+      "maxPower": { "val": 1.0 },
+      "x": { "val": 0.0 },
+      "y": { "val": 0.0 },
+      "angle": { "val": 0.0 },
+      "posTolerance": { "val": 0.25 },
+      "angleTolerance": { "val": 0.5 }
     },
     "motorControllerModules": []
   }

@@ -11,21 +11,21 @@ import java.util.function.Supplier;
 ///       "comment": string,
 ///       "endCondition": string,
 ///       "driveTrainModule": {
-///           "targetX": float,
-///           "targetY": float,
-///           "targetAngle": float,
-///           "posTolerance": float,
-///           "angleTolerance": float,
-///           "maxPower": float,
-///           "usePrecision": boolean,
+///           "targetX": { "val": float },
+///           "targetY": { "val": float },
+///           "targetAngle": { "val": float },
+///           "posTolerance": { "val": float },
+///           "angleTolerance": { "val": float },
+///           "maxPower": { "val": float },
+///           "usePrecision": { "val": boolean }
 ///       },
 ///       "motorControllerModules": [
 ///           {
-///               "id": string,
-///               "target": int,
-///               "tolerance": float,
-///               "maxPower": float,
-///               "power": float
+///               "id": { "val": string },
+///               "target": { "val": int },
+///               "tolerance": { "val": float },
+///               "maxPower": { "val": float },
+///               "power": { "val": float }
 ///           }
 ///       ]
 ///     } </code></pre>
@@ -49,21 +49,21 @@ public class AutoStep {
     ///       "comment": string,
     ///       "endCondition": string,
     ///       "driveTrainModule": {
-    ///           "driveMode": string,
-    ///           "maxPower": float,
-    ///           "x": float,
-    ///           "y": float,
-    ///           "angle": float,
-    ///           "posTolerance": float,
-    ///           "angleTolerance": float
+    ///           "driveMode": { "val": string },
+    ///           "maxPower": { "val": float },
+    ///           "x": { "val": float },
+    ///           "y": { "val": float },
+    ///           "angle": { "val": float },
+    ///           "posTolerance": { "val": float },
+    ///           "angleTolerance": { "val": float }
     ///       },
     ///       "motorControllerModules": [
     ///       {
-    ///           "id": string,
-    ///           "motorMode": string,
-    ///           "target": int/string,
-    ///           "tolerance": float/string,
-    ///           "maxPower": float/string
+    ///           "id": { "val": string },
+    ///           "motorMode": { "val": string },
+    ///           "target": { "val": int/string },
+    ///           "tolerance": { "val": float/string },
+    ///           "maxPower": { "val": float/string }
     ///       },
     ///         ...
     ///       ]

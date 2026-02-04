@@ -9,9 +9,9 @@ import com.epra.epralib.ftclib.movement.MotorController;
 ///         {
 ///             "id": string,
 ///             "motorMode": string,
-///             "target": int/string,
-///             "tolerance": float/string,
-///             "maxPower": float/string
+///             "target": { "val": int/string },
+///             "tolerance": { "val": float/string },
+///             "maxPower": { "val": float/string }
 ///         } </code></pre>
 ///
 /// A [MotorController] auto module can use one of three different `motorMode`s:
@@ -45,9 +45,9 @@ public class MotorControllerAutoModule {
     ///         {
     ///             "id": string,
     ///             "motorMode": string,
-    ///             "target": int,
-    ///             "tolerance": float,
-    ///             "maxPower": float
+    ///             "target": { "val": int },
+    ///             "tolerance": { "val": float },
+    ///             "maxPower": { "val": float }
     ///         } </code></pre>
     ///
     /// A [MotorController] auto module can use one of three different `motorMode`s:
@@ -81,9 +81,9 @@ public class MotorControllerAutoModule {
     ///         {
     ///             "id": string,
     ///             "motorMode": string,
-    ///             "target": int/string,
-    ///             "tolerance": float/string,
-    ///             "maxPower": float/string
+    ///             "target": { "val": int/string },
+    ///             "tolerance": { "val": float/string },
+    ///             "maxPower": { "val": float/string }
     ///         } </code></pre>
     /// Data can be strings that can reference [AutoProgram] data suppliers and are parsed using
     /// [AutoProgram#parseArithmatic(String)].

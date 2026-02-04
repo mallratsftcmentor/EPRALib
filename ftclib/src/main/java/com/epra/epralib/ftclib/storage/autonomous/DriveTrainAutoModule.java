@@ -11,12 +11,12 @@ import com.epra.epralib.ftclib.movement.DriveTrain;
 /// <pre><code>
 ///     {
 ///         "driveMode": string,
-///         "maxPower": float/string,
-///         "x": float/string,
-///         "y": float/string,
-///         "angle": float/string,
-///         "posTolerance": float/string,
-///         "angleTolerance": float/string
+///         "maxPower": { "val": float/string },
+///         "x": { "val": float/string },
+///         "y": { "val": float/string },
+///         "angle": { "val": float/string },
+///         "posTolerance": { "val": float/string },
+///         "angleTolerance": { "val": float/string }
 ///     }
 /// </code></pre>
 ///
@@ -60,12 +60,12 @@ public class DriveTrainAutoModule {
     /// <pre><code>
     ///     {
     ///         "driveMode": string,
-    ///         "maxPower": float,
-    ///         "x": float,
-    ///         "y": float,
-    ///         "angle": float,
-    ///         "posTolerance": float,
-    ///         "angleTolerance": float
+    ///         "maxPower": { "val": float },
+    ///         "x": { "val": float },
+    ///         "y": { "val": float },
+    ///         "angle": { "val": float },
+    ///         "posTolerance": { "val": float },
+    ///         "angleTolerance": { "val": float }
     ///     }
     /// </code></pre>
     ///
@@ -116,12 +116,12 @@ public class DriveTrainAutoModule {
     /// <pre><code>
     ///     {
     ///         "driveMode": string,
-    ///         "maxPower": float/string,
-    ///         "x": float/string,
-    ///         "y": float/string,
-    ///         "angle": float/string,
-    ///         "posTolerance": float/string,
-    ///         "angleTolerance": float/string
+    ///         "maxPower": { "val": float/string },
+    ///         "x": { "val": float/string },
+    ///         "y": { "val": float/string },
+    ///         "angle": { "val": float/string },
+    ///         "posTolerance": { "val": float/string },
+    ///         "angleTolerance": { "val": float/string }
     ///     }
     /// </code></pre>
     ///

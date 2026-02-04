@@ -27,20 +27,20 @@ An example of an auto step's structure:
        "endCondition": "DONE_SHOOTING",
        "driveTrainModule": {
            "driveMode": "direct_drive",
-           "maxPower": "[DRIVE.MAX_POWER]",
-           "x": 0.5,
-           "y": 0.25,
-           "angle": 90,
-           "posTolerance": 0,
-           "angleTolerance": "[DRIVE.ANGLE_TOLERANCE]"
+           "maxPower": { "val": "[DRIVE.MAX_POWER]", }
+           "x": { "val": 0.5, }
+           "y": { "val": 0.25, }
+           "angle": { "val": 90, }
+           "posTolerance": { "val": 0, }
+           "angleTolerance": { "val": "[DRIVE.ANGLE_TOLERANCE]" }
        },
        "motorControllerModules": [
        {
            "id": "Shooter",
            "motorMode": "direct_power",
-           "target": 0,
-           "tolerance": 0,
-           "maxPower": "[SHOOTER.POWER]"
+           "target": { "val": 0, }
+           "tolerance": { "val": 0, }
+           "maxPower": { "val": "[SHOOTER.POWER]" }
        }
        ]
      }

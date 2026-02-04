@@ -3,13 +3,13 @@
     "comment": "Idle",
     "endCondition": "TRUE",
     "driveTrainModule": {
-      "targetX": 0.0,
-      "targetY": 0.0,
-      "targetAngle": 0.0,
-      "posTolerance": 1.0,
-      "angleTolerance": 1.0,
-      "maxPower": 0.0,
-      "usePrecision": false
+      "driveMode": "none",
+      "maxPower": { "val": 0.0 },
+      "x": { "val": 0.0 },
+      "y": { "val": 0.0 },
+      "angle": { "val": 0.0 },
+      "posTolerance": { "val": 0.0 },
+      "angleTolerance": { "val": 0.0 }
     },
     "motorControllerModules": []
   }

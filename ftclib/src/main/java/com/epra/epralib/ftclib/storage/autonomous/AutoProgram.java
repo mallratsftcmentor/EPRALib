@@ -2,10 +2,13 @@ package com.epra.epralib.ftclib.storage.autonomous;
 
 import com.epra.epralib.ftclib.storage.logdata.LogController;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
 import com.google.gson.reflect.TypeToken;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 import java.io.FileReader;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -81,7 +84,7 @@ public class AutoProgram {
 
     private final String directoryPath;
     private final String programName;
-    private final Gson gson = new Gson();
+    private final Gson gson;
     private final HashMap<String, Supplier<Double>> dataSuppliers;
     private final HashMap<String, Supplier<Boolean>> conditionals;
     private final HashMap<String, ArrayList<AutoStep>> movementPaths;
@@ -116,6 +119,10 @@ public class AutoProgram {
     /// @see #parseConditionals()
     /// @see #parseProgram()
     public AutoProgram(String directoryPath, String programName, HashMap<String, Supplier<Double>> dataSuppliers) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(AutoModuleDataSupplier.class, new AMDSInstanceCreator());
+        gson = gsonBuilder.create();
+
         this.directoryPath = directoryPath;
         this.programName = programName;
         this.dataSuppliers = dataSuppliers;
@@ -204,7 +211,18 @@ public class AutoProgram {
             return new AutoProgram(directoryPath, programName, dataSuppliers);
         }
     }
-
+    /// Parses the `constants.json` file.
+    /// `constants.json` structure:
+    /// <code><pre>
+    /// {
+    ///     "CONSTANT_1_NAME": `Numerical Value`,
+    ///     "CONSTANT_2_NAME": `Numerical Value`,
+    ///     ...
+    /// }
+    /// </pre></code>
+    /// The `constants.json` file contains key-value pairs that can be accessed by conditionals,
+    /// treated in the exact same way as a data supplier.
+    /// @return If the parse was successful
     public boolean parseConstants() {
         try (FileReader file = new FileReader(AppUtil.getInstance().getSettingsFile(directoryPath + "/constants.json"))) {
             LinkedHashMap<String, Double> tempConstants = gson.fromJson(file, new TypeToken<LinkedHashMap<String, Double>>() {}.getType());
@@ -845,6 +863,28 @@ public class AutoProgram {
         /// Returns the value of this [AutoModuleDataSupplier].
         /// @return This data supplier's value
         double get();
+    }
+    /// Creates an [AutoModuleDataSupplier] from a value.
+    /// @param val A string or number to create the AMDS from
+    /// @return The AMDS created with the given value
+    protected AutoModuleDataSupplier makeAMDS(Object val) {
+        if (val instanceof Number) {
+            return new AutoModuleDataSupplierNumber(((Number) val).doubleValue());
+        } else if (val instanceof String) {
+            return new AutoModuleDataSupplierString(val.toString());
+        }
+        LogController.logError("Invalid data type for AutoModuleDataSupplier: " + val.getClass().getName());
+        return null;
+    }
+
+    /// A [Gson] [InstanceCreator] for an [AutoModuleDataSupplier].
+    private class AMDSInstanceCreator implements InstanceCreator<AutoModuleDataSupplier> {
+        @Override
+        public AutoModuleDataSupplier createInstance(Type type) {
+            // Return a new instance of MyClass.
+            // The fields of this instance will be overwritten by Gson from the JSON data.
+            return makeAMDS(0);
+        }
     }
 
     /// An [AutoModuleDataSupplier] that supplies a constant double value.
