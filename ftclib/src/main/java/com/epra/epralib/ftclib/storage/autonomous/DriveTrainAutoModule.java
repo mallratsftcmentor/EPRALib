@@ -47,12 +47,12 @@ import com.epra.epralib.ftclib.movement.DriveTrain;
 public class DriveTrainAutoModule {
 
     private final String driveMode;
-    private final AutoProgram.AutoModuleDataSupplier x;
-    private final AutoProgram.AutoModuleDataSupplier y;
-    private final AutoProgram.AutoModuleDataSupplier angle;
-    private final AutoProgram.AutoModuleDataSupplier posTolerance;
-    private final AutoProgram.AutoModuleDataSupplier angleTolerance;
-    private final AutoProgram.AutoModuleDataSupplier maxPower;
+    private final AutoProgram.AutoModuleDataSupplierNumber x;
+    private final AutoProgram.AutoModuleDataSupplierNumber y;
+    private final AutoProgram.AutoModuleDataSupplierNumber angle;
+    private final AutoProgram.AutoModuleDataSupplierNumber posTolerance;
+    private final AutoProgram.AutoModuleDataSupplierNumber angleTolerance;
+    private final AutoProgram.AutoModuleDataSupplierNumber maxPower;
 
     /// A class that stores instructions for the [DriveTrain] during auto.
     ///
@@ -158,9 +158,9 @@ public class DriveTrainAutoModule {
     /// if the driveMode instructs the robot to move towards a target position
     /// @param angleTolerance The tolerance for reaching the `angle` (1 being no precision and 0 being infinite precision)
     /// @see DriveTrain#useDriveTrainAutoModule(DriveTrainAutoModule)
-    public DriveTrainAutoModule(String driveMode, AutoProgram.AutoModuleDataSupplier maxPower, AutoProgram.AutoModuleDataSupplier x,
-                                AutoProgram.AutoModuleDataSupplier y, AutoProgram.AutoModuleDataSupplier angle,
-                                AutoProgram.AutoModuleDataSupplier posTolerance, AutoProgram.AutoModuleDataSupplier angleTolerance) {
+    public DriveTrainAutoModule(String driveMode, AutoProgram.AutoModuleDataSupplierNumber maxPower, AutoProgram.AutoModuleDataSupplierNumber x,
+                                AutoProgram.AutoModuleDataSupplierNumber y, AutoProgram.AutoModuleDataSupplierNumber angle,
+                                AutoProgram.AutoModuleDataSupplierNumber posTolerance, AutoProgram.AutoModuleDataSupplierNumber angleTolerance) {
         this.driveMode = driveMode;
         this.maxPower = maxPower;
         this.x = x;

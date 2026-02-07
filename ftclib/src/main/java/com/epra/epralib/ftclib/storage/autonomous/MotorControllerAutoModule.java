@@ -34,9 +34,9 @@ public class MotorControllerAutoModule {
 
     private final String id;
     private String motorMode;
-    private final AutoProgram.AutoModuleDataSupplier target;
-    private final AutoProgram.AutoModuleDataSupplier tolerance;
-    private final AutoProgram.AutoModuleDataSupplier maxPower;
+    private final AutoProgram.AutoModuleDataSupplierNumber target;
+    private final AutoProgram.AutoModuleDataSupplierNumber tolerance;
+    private final AutoProgram.AutoModuleDataSupplierNumber maxPower;
 
     /// A class that stores instructions for a [MotorController] during auto.
     ///
@@ -105,9 +105,9 @@ public class MotorControllerAutoModule {
     /// @param maxPower  The maximum absolute power the motor controller may reach. Capped at 1.0
     /// @see MotorController#moveToTarget(double, double, boolean)
     public MotorControllerAutoModule(String id, String motorMode,
-                                     AutoProgram.AutoModuleDataSupplier target,
-                                     AutoProgram.AutoModuleDataSupplier tolerance,
-                                     AutoProgram.AutoModuleDataSupplier maxPower) {
+                                     AutoProgram.AutoModuleDataSupplierNumber target,
+                                     AutoProgram.AutoModuleDataSupplierNumber tolerance,
+                                     AutoProgram.AutoModuleDataSupplierNumber maxPower) {
         this.id = id;
         this.motorMode = motorMode;
         this.target = target;

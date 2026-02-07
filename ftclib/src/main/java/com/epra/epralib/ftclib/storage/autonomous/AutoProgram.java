@@ -868,6 +868,7 @@ public class AutoProgram {
     /// @param val A string or number to create the AMDS from
     /// @return The AMDS created with the given value
     protected AutoModuleDataSupplier makeAMDS(Object val) {
+        LogController.logInfo("Creating AMDS with value: " + val.toString());
         if (val instanceof Number) {
             return new AutoModuleDataSupplierNumber(((Number) val).doubleValue());
         } else if (val instanceof String) {
@@ -889,13 +890,13 @@ public class AutoProgram {
 
     /// An [AutoModuleDataSupplier] that supplies a constant double value.
     static final class AutoModuleDataSupplierNumber implements AutoModuleDataSupplier {
-        private final double value;
+        private final double val;
         /// A [AutoModuleDataSupplier] that supplies a constant double value.
-        /// @param value The value for this data supplier to supply
-        AutoModuleDataSupplierNumber(double value) { this.value = value; }
+        /// @param val The value for this data supplier to supply
+        AutoModuleDataSupplierNumber(double val) { this.val = val; }
 
         @Override
-        public double get() { return value; }
+        public double get() { return val; }
     }
 
     /// An [AutoModuleDataSupplier] that parses a string using [AutoProgram#parseProgram()] to return a

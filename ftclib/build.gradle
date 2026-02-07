@@ -27,7 +27,7 @@ dependencies {
 }
 
 group = 'com.epra.epralib'
-version = '1.6.35'
+version = '1.6.40'
 
 // Configure Dokka
 dokkaHtml {

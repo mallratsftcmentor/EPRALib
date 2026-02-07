@@ -214,8 +214,8 @@ public class DriveTrain {
             this.motors = new ArrayList<>();
             this.orientations = new ArrayList<>();
             this.driveType = DriveType.TANK;
-            this.poseSupplier = () -> null;
-            this.deltaPoseSupplier = () -> null;
+            this.poseSupplier = () -> new Pose(new Vector(0, 0), new Angle());
+            this.deltaPoseSupplier = () -> new Vector(0, 0);
             tuneP = tuneA = tuneM = false;
         }
         /// Adds a [MotorController] and corresponding [Orientation] to the [DriveTrain].
@@ -355,9 +355,9 @@ public class DriveTrain {
         /// @return The drive train built by this builder
         public DriveTrain build() {
             DriveTrain dt = new DriveTrain(motors.toArray(new MotorController[0]), orientations.toArray(new Orientation[0]),
-                    (poseSupplier == null) ? poseSupplier : () -> new Pose(new Vector(0, 0), new Angle()),
-                    (deltaPoseSupplier == null) ? deltaPoseSupplier : () -> new Vector(0, 0),
-                    (deltaPoseSupplier != null && poseSupplier != null),
+                    this.poseSupplier,
+                    this.deltaPoseSupplier,
+                    true,
                     driveType);
             if (tuneP) dt.tunePointPID(kp_p, ki_p, kd_p);
             if (tuneA) dt.tuneAnglePID(kp_a, ki_a, kd_a);
@@ -552,8 +552,10 @@ public class DriveTrain {
         if (target.pos.x() != targetPose.pos.x() || target.pos.y()!= targetPose.pos.y() || target.angle.degree() != targetPose.angle.degree()) {
             lastTargetPose = targetPose;
             targetPose = target;
-            PIDController.activate("DriveTrain_P");
-            PIDController.activate("DriveTrain_M");
+            PIDController.activate("DriveTrain_Px");
+            PIDController.activate("DriveTrain_Py");
+            PIDController.activate("DriveTrain_Mx");
+            PIDController.activate("DriveTrain_My");
         }
     }
 
@@ -584,16 +586,19 @@ public class DriveTrain {
     /// @see #posPIDMecanumDrive(double, double, double)
     /// @see #useDriveTrainAutoModule(DriveTrainAutoModule)
     public boolean posPIDMecanumDrive(double posTolerance, double angleTolerance, double maxPower, boolean haltAtTarget) {
-        if (!positionControlEnabled || !PIDController.hasPID("DriveTrain_P") || !PIDController.hasPID("DriveTrain_A")) { return false; }
-        PIDController.idle("DriveTrain_M");
+        if (!positionControlEnabled || !PIDController.hasPID("DriveTrain_Px") || !PIDController.hasPID("DriveTrain_Py")
+                || !PIDController.hasPID("DriveTrain_A")) { return false; }
+        PIDController.idle("DriveTrain_Mx");
+        PIDController.idle("DriveTrain_My");
         Pose current = poseSupplier.get();
-        Vector vectorLeft = new Vector(PIDController.get("DriveTrain_P"), new Vector(-1 * (targetPose.pos.y() - current.pos.y()), (targetPose.pos.x() - current.pos.x())).theta());
+        Vector vectorLeft = new Vector(PIDController.get("DriveTrain_Px"), -PIDController.get("DriveTrain_Py"));
         Vector vectorRight = new Vector(1.0, targetPose.angle);
         boolean b = fieldOrientedMecanumDrive(vectorRight, new Vector(Math.min(maxPower, vectorLeft.length()), vectorLeft.theta()), angleTolerance, haltAtTarget);
         if (Geometry.subtract(current.pos, targetPose.pos).length() <= getAbsolutePosTolerance(posTolerance) && b) {
             if (haltAtTarget) {
                 mecanumDrive(0, 0, 0);
-                PIDController.idle("DriveTrain_P");
+                PIDController.idle("DriveTrain_Px");
+                PIDController.idle("DriveTrain_Py");
             }
             return true;
         }
@@ -639,19 +644,24 @@ public class DriveTrain {
     /// @see PIDController
     /// @see #useDriveTrainAutoModule(DriveTrainAutoModule)
     public boolean posPIDMecanumDrive(double posRange, double angleTolerance, double maxPower) {
-        if (!positionControlEnabled || !PIDController.hasPID("DriveTrain_M") || !PIDController.hasPID("DriveTrain_A")) { return false; }
-        PIDController.idle("DriveTrain_P");
+        if (!positionControlEnabled || !PIDController.hasPID("DriveTrain_Mx") || !PIDController.hasPID("DriveTrain_My") ||
+                !PIDController.hasPID("DriveTrain_A")) { return false; }
+        PIDController.idle("DriveTrain_Px");
+        PIDController.idle("DriveTrain_Py");
         Pose current = poseSupplier.get();
         Vector deltaPos = deltaPoseSupplier.get();
         Vector targetVector = new Vector(current.pos, targetPose.pos);
         if (targetVector.length() < 1) { targetVector = new Vector(1, targetVector.theta()); }
         Vector delta = new Vector(lastMotionVector.length(), deltaPos.theta());
-        lastMotionVector = Geometry.add(new Vector(PIDController.get("DriveTrain_M"), new Vector(-1 * (delta.y() - targetVector.y()), (delta.x() - targetVector.x())).theta()), lastMotionVector);
+        lastMotionVector = Geometry.add(new Vector(PIDController.get("DriveTrain_Mx"), PIDController.get("DriveTrain_My")), lastMotionVector);
         if (lastMotionVector.length() > maxPower) { lastMotionVector = new Vector(maxPower, lastMotionVector.theta()); }
         Vector vectorRight = new Vector(1.0, targetPose.angle);
         fieldOrientedMecanumDrive(vectorRight, lastMotionVector, angleTolerance, false);
         boolean b = Math.abs(Geometry.subtract(targetPose.pos, current.pos).length()) <= posRange;
-        if (b) { PIDController.idle("DriveTrain_M"); }
+        if (b) {
+            PIDController.idle("DriveTrain_Mx");
+            PIDController.idle("DriveTrain_My");
+        }
         return b;
     }
 
@@ -737,10 +747,15 @@ public class DriveTrain {
     ///
     /// @see PIDController
     public void tunePointPID(double kp, double ki, double kd) {
-        if (PIDController.hasPID("DriveTrain_P")) {
-            PIDController.tune("DriveTrain_P", kp, ki, kd);
+        if (PIDController.hasPID("DriveTrain_Px")) {
+            PIDController.tune("DriveTrain_Px", kp, ki, kd);
         } else {
-            PIDController.addPID("DriveTrain_P", kp, ki, kd, this::getPointError, false);
+            PIDController.addPID("DriveTrain_Px", kp, ki, kd, () -> this.getPointError().x(), false);
+        }
+        if (PIDController.hasPID("DriveTrain_Py")) {
+            PIDController.tune("DriveTrain_Py", kp, ki, kd);
+        } else {
+            PIDController.addPID("DriveTrain_Py", kp, ki, kd, () -> this.getPointError().y(), false);
         }
     }
     /// Tunes and/or initializes the PID loop used to move to a target point in [#posPIDMecanumDrive(double, double, double, boolean)] using
@@ -749,10 +764,15 @@ public class DriveTrain {
     ///
     /// @see PIDController
     public void tunePointPID(PIDCoefficients pidCoefficients) {
-        if (PIDController.hasPID("DriveTrain_P")) {
-            PIDController.tune("DriveTrain_P", pidCoefficients);
+        if (PIDController.hasPID("DriveTrain_Px")) {
+            PIDController.tune("DriveTrain_Px", pidCoefficients);
         } else {
-            PIDController.addPID("DriveTrain_P", pidCoefficients, this::getPointError, false);
+            PIDController.addPID("DriveTrain_Px", pidCoefficients, () -> this.getPointError().x(), false);
+        }
+        if (PIDController.hasPID("DriveTrain_Py")) {
+            PIDController.tune("DriveTrain_Py", pidCoefficients);
+        } else {
+            PIDController.addPID("DriveTrain_Py", pidCoefficients, () -> this.getPointError().y(), false);
         }
     }
 
@@ -764,10 +784,15 @@ public class DriveTrain {
     ///
     /// @see PIDController
     public void tuneMotionPID(double kp, double ki, double kd) {
-        if (PIDController.hasPID("DriveTrain_M")) {
-            PIDController.tune("DriveTrain_M", kp, ki, kd);
+        if (PIDController.hasPID("DriveTrain_Mx")) {
+            PIDController.tune("DriveTrain_Mx", kp, ki, kd);
         } else {
-            PIDController.addPID("DriveTrain_M", kp, ki, kd, this::getMotionError, false);
+            PIDController.addPID("DriveTrain_Mx", kp, ki, kd, () -> this.getMotionError().x(), false);
+        }
+        if (PIDController.hasPID("DriveTrain_My")) {
+            PIDController.tune("DriveTrain_My", kp, ki, kd);
+        } else {
+            PIDController.addPID("DriveTrain_My", kp, ki, kd, () -> this.getMotionError().y(), false);
         }
     }
     /// Tunes and/or initializes the PID loop used to reach the target motion vector in [#posPIDMecanumDrive(double, double, double)] using
@@ -776,10 +801,15 @@ public class DriveTrain {
     ///
     /// @see PIDController
     public void tuneMotionPID(PIDCoefficients pidCoefficients) {
-        if (PIDController.hasPID("DriveTrain_M")) {
-            PIDController.tune("DriveTrain_M", pidCoefficients);
+        if (PIDController.hasPID("DriveTrain_Mx")) {
+            PIDController.tune("DriveTrain_Mx", pidCoefficients);
         } else {
-            PIDController.addPID("DriveTrain_M", pidCoefficients, this::getMotionError, false);
+            PIDController.addPID("DriveTrain_Mx", pidCoefficients, () -> this.getMotionError().x(), false);
+        }
+        if (PIDController.hasPID("DriveTrain_My")) {
+            PIDController.tune("DriveTrain_My", pidCoefficients);
+        } else {
+            PIDController.addPID("DriveTrain_My", pidCoefficients, () -> this.getMotionError().y(), false);
         }
     }
 
@@ -789,21 +819,28 @@ public class DriveTrain {
         return Geometry.subtract(target, poseSupplier.get().angle).radian();
     }
 
-    /// Returns the error between the current position and the target position set in [#setTargetPose(Pose)].
+    /// Returns the error between the current position and the target position set in [#setTargetPose(Pose)] as a [Vector].
     /// @return The position error
-    public double getPointError() {
-        return Geometry.subtract(targetPose.pos, poseSupplier.get().pos).length();
+    public Vector getPointError() {
+        return Geometry.subtract(targetPose.pos, poseSupplier.get().pos);
     }
 
-    /// Returns the error between the current motion [Vector] and the target motion [Vector].
+    /// Returns the current [Pose] of the robot, based on the [#poseSupplier].
+    /// @return The output of the pose supplier
+    public Pose getPose() { return poseSupplier.get(); }
+    /// Returns the current delta [Pose] of the robot, based on the [#deltaPoseSupplier] as a [Vector].
+    /// @return The output of the delta pose supplier
+    public Vector getDeltaPose() { return deltaPoseSupplier.get(); }
+
+    /// Returns the error between the current motion [Vector] and the target motion [Vector] as a [Vector].
     /// @return The motion error
-    public double getMotionError() {
+    public Vector getMotionError() {
         Pose current = poseSupplier.get();
         Vector deltaPos = deltaPoseSupplier.get();
         Vector targetVector = new Vector(current.pos, targetPose.pos);
         if (targetVector.length() < 1) { targetVector = new Vector(1, targetVector.theta()); }
         Vector delta = new Vector(lastMotionVector.length(), deltaPos.theta());
-        return Geometry.subtract(delta, targetVector).length();
+        return Geometry.subtract(delta, targetVector);
     }
 
     /// Using joystick inputs, drives with the [DriveType] of this drive train.
