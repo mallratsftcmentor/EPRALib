@@ -48,6 +48,14 @@ public class Circle implements Shape2D {
     /// Returns the area of the circle or arc.
     /// @return The area of the angle or arc
     public double area() { return Math.PI * Math.pow(this.radius, 2) * (start.degree() == end.degree() ? 1 : Math.abs(end.degree() - start.degree()) / 360.0); }
+
+    /// Returns the perimeter of the circle or arc length.
+    /// @return The arc length
+    public double perimeter() {
+        Angle a = Geometry.subtract(start, end);
+        return Math.PI * 2 * radius * ((a.degree() == 0) ? 1 : a.degree() / 360);
+    }
+
     /// Returns the circumference if this is a circle or the arc length if this is an arc.
     /// @return The circumference or arc length
     public double circumference() { return Math.PI * this.radius * 2.0 * (start.degree() == end.degree() ? 1 : Math.abs(end.degree() - start.degree()) / 360.0); }

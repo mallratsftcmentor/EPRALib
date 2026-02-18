@@ -6,7 +6,7 @@ import java.util.Collections;
 /**Holds a group of geometric components.
  *<p></p>
  *Queer Coded by Striker-909. If you use this class or a method from this class in its entirety, please make sure to give credit.*/
-public class PolyGroup implements Shape2D {
+public class    PolyGroup implements Shape2D {
 
     /**All the geometric components of the PolyGroup.*/
     ArrayList<Shape2D> components = new ArrayList<>();
@@ -34,6 +34,16 @@ public class PolyGroup implements Shape2D {
             area += component.area();
         }
         return area;
+    }
+
+    /// Sums perimeter of all components [`Shape2Ds`](Shape2D).
+    /// @return The summed perimeter of all components
+    public double perimeter() {
+        double perimeter = 0.0;
+        for (Shape2D component : components) {
+            perimeter += component.area();
+        }
+        return perimeter;
     }
 
     /**@param point Point to check.

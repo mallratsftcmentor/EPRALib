@@ -105,6 +105,10 @@ public class Triangle implements Shape2D{
     /**@return The area of the triangle.*/
     public double area() { return (getBC() * getCA() * Math.sin(angleC.radian())) / 2; }
 
+    /// Returns the perimeter of the triangle.
+    /// @return Perimeter of the triangle
+    public double perimeter() {return (getAB() + getBC() + getCA());}
+
     /**@return The perimeter of the triangle.*/
     public double getPerimeter() { return getAB() + getBC() + getCA(); }
 
