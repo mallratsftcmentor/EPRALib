@@ -1,4 +1,4 @@
-package com.epra.epralib.ftclib.location;
+package com.epra.epralib.ftclib.location.imu;
 
 import com.epra.epralib.ftclib.math.geometry.Angle;
 import com.epra.epralib.ftclib.math.geometry.Geometry;
@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-/// An object that can combine data from any number of [IMU]s.
+/// An object that can combine data from any number of [IMUWrapper]s.
 ///
-/// Queer Coded by Striker-909.
-/// If you use this class or a method from this class in its entirety, please make sure to give credit.
+/// @author Striker-909
+/// @author jfishCoder
 public class MultiIMU implements DataLogger {
 
     private Angle baseYaw = new Angle();
@@ -25,18 +25,18 @@ public class MultiIMU implements DataLogger {
         ROLL
     }
 
-    ArrayList<IMU> imus = new ArrayList<>();
+    ArrayList<IMUWrapper> imus = new ArrayList<>();
 
     private final String logPath;
     private final HashMap<String, Double> logData;
     private final Axis[] loggingTargets;
 
-    /// An object that can combine data from any number of [IMU]s.
+    /// An object that can combine data from any number of [IMUWrapper]s.
     ///
-    /// @param imu An IMU
-    /// @param imus Any number of additional IMUs
+    /// @param imu An IMUWrapper
+    /// @param imus Any number of additional IMUWrappers
     /// @param loggingTargets An array of the axes that this multiIMU should log rotational data on
-    public MultiIMU(IMU imu, IMU[] imus, Axis[] loggingTargets) {
+    public MultiIMU(IMUWrapper imu, IMUWrapper[] imus, Axis[] loggingTargets) {
         this.imus.add(imu);
         this.imus.addAll(java.util.Arrays.asList(imus));
 
@@ -45,11 +45,11 @@ public class MultiIMU implements DataLogger {
         this.logData = new HashMap<>();
         recenter();
     }
-    /// An object that can combine data from any number of [IMU]s.
+    /// An object that can combine data from any number of [IMUWrapper]s.
     ///
-    /// @param imus Any number of additional IMUs
+    /// @param imus Any number of additional IMUWrappers
     /// @param loggingTargets An array of the axes that this multiIMU should log rotational data on
-    public MultiIMU(IMU[] imus, Axis[] loggingTargets) {
+    public MultiIMU(IMUWrapper[] imus, Axis[] loggingTargets) {
         this.imus.addAll(java.util.Arrays.asList(imus));
 
         this.logPath = "IMU.json";
@@ -60,7 +60,7 @@ public class MultiIMU implements DataLogger {
 
     /// A builder for a [MultiIMU].
     public static class Builder {
-        private ArrayList<IMU> imus;
+        private ArrayList<IMUWrapper> imus;
         private Angle initialYaw = new Angle();
         private Angle initialPitch = new Angle();
         private Angle initialRoll = new Angle();
@@ -69,41 +69,41 @@ public class MultiIMU implements DataLogger {
         /// A builder for a [MultiIMU].
         ///
         /// Starts with default parameters:
-        /// - Only one [IMU].
+        /// - Only one [IMUWrapper].
         /// - No logging targets.
-        /// @param imu An IMU
+        /// @param imu An IMUWrapper
         ///
-        /// @see #imu(IMU...)
+        /// @see #imu(IMUWrapper...)
         /// @see #loggingTarget(Axis...)
         /// @see #build()
-        public Builder(IMU imu) {
+        public Builder(IMUWrapper imu) {
             imus = new ArrayList<>();
             imus.add(imu);
             loggingTargets = new ArrayList<>();
         }
 
-        /// Adds any number of [IMU]s to the builder.
-        /// @param imus Any number of IMUs
+        /// Adds any number of [IMUWrapper]s to the builder.
+        /// @param imus Any number of IMUWrappers
         /// @return This builder
-        public Builder imu(IMU... imus) {
+        public Builder imu(IMUWrapper... imus) {
             this.imus.addAll(java.util.Arrays.asList(imus));
             return this;
         }
-        /// Sets the initial yaw value for IMU.
+        /// Sets the initial yaw value for IMUWrapper.
         /// @param initialYaw The initial yaw value
         /// @return This builder
         public Builder initialYaw(Angle initialYaw) {
             this.initialYaw = initialYaw;
             return this;
         }
-        /// Sets the initial pitch value for IMU.
+        /// Sets the initial pitch value for IMUWrapper.
         /// @param initialPitch The initial pitch value
         /// @return This builder
         public Builder initialPitch(Angle initialPitch) {
             this.initialPitch = initialPitch;
             return this;
         }
-        /// Sets the initial roll value for IMU.
+        /// Sets the initial roll value for IMUWrapper.
         /// @param initialRoll The initial yaw value
         /// @return This builder
         public Builder initialRoll(Angle initialRoll) {
@@ -120,7 +120,7 @@ public class MultiIMU implements DataLogger {
         /// Builds a [MultiIMU] from this builder.
         /// @return The multiIMU built from this builder
         public  MultiIMU build() {
-            MultiIMU temp =  new MultiIMU(imus.toArray(imus.toArray(new IMU[0])), loggingTargets.toArray(new Axis[0]));
+            MultiIMU temp =  new MultiIMU(imus.toArray(imus.toArray(new IMUWrapper[0])), loggingTargets.toArray(new Axis[0]));
             temp.baseYaw = initialYaw;
             temp.basePitch = initialPitch;
             temp.baseRoll = initialRoll;
@@ -128,37 +128,37 @@ public class MultiIMU implements DataLogger {
         }
     }
 
-    /// Averages the [Axis#YAW] [Angle] from all [IMU]s.
+    /// Averages the [Axis#YAW] [Angle] from all [IMUWrapper]s.
     /// @return The average yaw angle
     public Angle getYaw() {
         Angle[] angle = new Angle[imus.size()];
         for (int i = 0; i < imus.size(); i++) {
-            angle[i] = Angle.degree(imus.get(i).getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            angle[i] = imus.get(i).getYaw();
         }
         return Geometry.subtract(Geometry.average(angle), baseYaw);
     }
 
-    /// Averages the [Axis#PITCH] [Angle] from all [IMU]s.
+    /// Averages the [Axis#PITCH] [Angle] from all [IMUWrapper]s.
     /// @return The average pitch angle
     public Angle getPitch() {
         Angle[] angle = new Angle[imus.size()];
         for (int i = 0; i < imus.size(); i++) {
-            angle[i] = Angle.degree(imus.get(i).getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
+            angle[i] = imus.get(i).getPitch();
         }
         return Geometry.subtract(Geometry.average(angle), basePitch);
     }
 
-    /// Averages the [Axis#ROLL] [Angle] from all [IMU]s.
+    /// Averages the [Axis#ROLL] [Angle] from all [IMUWrapper]s.
     /// @return The average roll angle
     public Angle getRoll() {
         Angle[] angle = new Angle[imus.size()];
         for (int i = 0; i < imus.size(); i++) {
-            angle[i] = Angle.degree(imus.get(i).getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
+            angle[i] = imus.get(i).getRoll();
         }
         return Geometry.subtract(Geometry.average(angle), baseRoll);
     }
 
-    /// Averages the [Angle] around the specified [Axis] from all [IMU]s.
+    /// Averages the [Angle] around the specified [Axis] from all [IMUWrapper]s.
     /// @param axis An axis
     /// @return The average angle around the axis
     public Angle getAngle(Axis axis) {
@@ -169,15 +169,60 @@ public class MultiIMU implements DataLogger {
         };
     }
 
-    /// Sets the current [Axis#YAW], [Axis#PITCH], and [Axis#ROLL] of all [IMU]s to be the new zero.
+    /// Averages the [Axis#YAW] angular velocity from all [IMUWrapper]s,
+    /// returns it as an [Angle].
+    /// @return The average yaw angular velocity
+    public Angle getYawVelocity() {
+        Angle[] angle = new Angle[imus.size()];
+        for (int i = 0; i < imus.size(); i++) {
+            angle[i] = imus.get(i).getYawVelocity();
+        }
+        return Geometry.average(angle);
+    }
+
+    /// Averages the [Axis#PITCH] angular velocity from all [IMUWrapper]s,
+    /// returns it as an [Angle].
+    /// @return The average pitch angular velocity
+    public Angle getPitchVelocity() {
+        Angle[] angle = new Angle[imus.size()];
+        for (int i = 0; i < imus.size(); i++) {
+            angle[i] = imus.get(i).getPitchVelocity();
+        }
+        return Geometry.average(angle);
+    }
+
+    /// Averages the [Axis#ROLL] angular velocity from all [IMUWrapper]s,
+    /// returns it as an [Angle].
+    /// @return The average roll angular velocity
+    public Angle getRollVelocity() {
+        Angle[] angle = new Angle[imus.size()];
+        for (int i = 0; i < imus.size(); i++) {
+            angle[i] = imus.get(i).getRollVelocity();
+        }
+        return Geometry.average(angle);
+    }
+
+    /// Averages the angular velocity around the specified [Axis] from all [IMUWrapper]s,
+    /// returns it as an [Angle].
+    /// @param axis An axis
+    /// @return The average angular velocity around the axis
+    public Angle getAngularVelocity(Axis axis) {
+        return switch (axis) {
+            case YAW -> getYawVelocity();
+            case PITCH -> getPitchVelocity();
+            case ROLL -> getRollVelocity();
+        };
+    }
+
+    /// Sets the current [Axis#YAW], [Axis#PITCH], and [Axis#ROLL] of all [IMUWrapper]s to be the new zero.
     public void recenter() {
         Angle[] yaw = new Angle[imus.size()];
         Angle[] pitch = new Angle[imus.size()];
         Angle[] roll = new Angle[imus.size()];
         for (int i = 0; i < imus.size(); i++) {
-            yaw[i] = Angle.degree(imus.get(i).getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            pitch[i] = Angle.degree(imus.get(i).getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
-            roll[i] = Angle.degree(imus.get(i).getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
+            yaw[i] = imus.get(i).getYaw();
+            pitch[i] = imus.get(i).getPitch();
+            roll[i] = imus.get(i).getRoll();
         }
         baseYaw = Geometry.average(yaw);
         basePitch = Geometry.average(pitch);

@@ -1,5 +1,6 @@
 package com.epra.epralib.ftclib.location;
 
+import com.epra.epralib.ftclib.location.imu.MultiIMU;
 import com.epra.epralib.ftclib.math.geometry.*;
 import com.epra.epralib.ftclib.math.geometry.Vector;
 import com.epra.epralib.ftclib.math.statistics.RollingAverage;

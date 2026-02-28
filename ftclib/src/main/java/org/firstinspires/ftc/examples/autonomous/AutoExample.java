@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.examples.autonomous;
 
-import com.epra.epralib.ftclib.location.MultiIMU;
+import com.epra.epralib.ftclib.location.imu.IMUFrame;
+import com.epra.epralib.ftclib.location.imu.MultiIMU;
 import com.epra.epralib.ftclib.location.Odometry;
 import com.epra.epralib.ftclib.location.Pose;
 import com.epra.epralib.ftclib.math.geometry.Angle;
@@ -62,7 +63,7 @@ public class AutoExample extends LinearOpMode {
 
         IMU tempIMU = hardwareMap.get(IMU.class, "imu 1");
         tempIMU.initialize(new IMU.Parameters(orientationOnRobot));
-        imu = new MultiIMU.Builder(tempIMU)
+        imu = new MultiIMU.Builder(new IMUFrame(tempIMU))
                 .initialYaw(Geometry.subtract(Angle.degree(tempIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)), START_POSE.angle))
                 .loggingTarget(MultiIMU.Axis.YAW)
                 .build();
