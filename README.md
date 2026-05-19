@@ -42,7 +42,8 @@ installation.
         exclude group: 'org.firstinspires.ftc'
     }
    ```
-5) Sync your FTC project with the modifications to the Gradle files and the library should download.
+5) In the Project Structure (found by going to ≣ → File → Project Structure) set the java version for both `TeamCode` and `FtcRobotController` modules to `JavaVersion.VERSION_17`.
+6) Sync your FTC project with the modifications to the Gradle files and the library should download.
 
 ## Versions & Documentation
 Our version numbers use a simple x.y.z system. The first number, x, is only changed
@@ -171,4 +172,4 @@ to implement a modular autonomous using these storage classes.
 ## Credits
 This README was written by Striker-909, the lead programmer of FTC 18387. 
 
-This README was last updated 12/20/2025, for version 1.6.0
+This README was last updated 5/19/2026, for version 1.7.0

@@ -6,29 +6,31 @@ import java.util.function.Supplier;
 /// A class that stores instructions for one step of auto.
 ///
 /// JSON Format:
-/// <pre><code>
+/// ``` json
 ///     {
 ///       "comment": string,
 ///       "endCondition": string,
 ///       "driveTrainModule": {
-///           "targetX": { "val": float },
-///           "targetY": { "val": float },
-///           "targetAngle": { "val": float },
-///           "posTolerance": { "val": float },
-///           "angleTolerance": { "val": float },
+///           "driveMode": string,
 ///           "maxPower": { "val": float },
-///           "usePrecision": { "val": boolean }
+///           "x": { "val": float },
+///           "y": { "val": float },
+///           "angle": { "val": float },
+///           "posTolerance": { "val": float },
+///           "angleTolerance": { "val": float }
 ///       },
 ///       "motorControllerModules": [
-///           {
-///               "id": { "val": string },
-///               "target": { "val": int },
-///               "tolerance": { "val": float },
-///               "maxPower": { "val": float },
-///               "power": { "val": float }
-///           }
+///       {
+///           "id": string,
+///           "motorMode": string,
+///           "target": { "val": int/string },
+///           "tolerance": { "val": float/string },
+///           "maxPower": { "val": float/string }
+///       },
+///         ...
 ///       ]
-///     } </code></pre>
+///     }
+/// ```
 ///
 /// To be used in a list in movement files.
 ///
@@ -49,7 +51,7 @@ public class AutoStep {
     ///       "comment": string,
     ///       "endCondition": string,
     ///       "driveTrainModule": {
-    ///           "driveMode": { "val": string },
+    ///           "driveMode": string,
     ///           "maxPower": { "val": float },
     ///           "x": { "val": float },
     ///           "y": { "val": float },
@@ -59,8 +61,8 @@ public class AutoStep {
     ///       },
     ///       "motorControllerModules": [
     ///       {
-    ///           "id": { "val": string },
-    ///           "motorMode": { "val": string },
+    ///           "id": string,
+    ///           "motorMode": string,
     ///           "target": { "val": int/string },
     ///           "tolerance": { "val": float/string },
     ///           "maxPower": { "val": float/string }
