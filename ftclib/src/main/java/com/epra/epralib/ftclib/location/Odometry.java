@@ -329,17 +329,16 @@ public class Odometry implements DataLogger {
 
     /// Updates the Φ (Δθ) value based on measurements from the encoders.
     /// @return The new Φ value
-    private Angle phiEncoder() {
-        double l = Math.abs(Geometry.subtract(displacement.get(Orientation.LEFT), displacement.get(Orientation.RIGHT)).x());
-        phi = Angle.radian((((delta.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT) -
-                delta.get(Orientation.LEFT) * unitPerTick.get(Orientation.LEFT)))
-                / l) * (180.0 / Math.PI) * -1.0);
-        //compensates for previous error
-        Angle diff = Geometry.subtract(Geometry.add(Angle.radian((((last.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT)
-                - last.get(Orientation.LEFT) * unitPerTick.get(Orientation.LEFT))) / l) * (180.0 / Math.PI) * -1.0), startPose.angle), this.pose.angle);
-        phi = Geometry.add(diff, phi);
-        return phi;
-    }
+	private Angle phiEncoder() {
+		double trackWidth = Math.abs(Geometry.subtract(displacement.get(Orientation.LEFT), displacement.get(Orientation.RIGHT)).x());
+		phi = Angle.radian((delta.get(Orientation.LEFT) * unitPerTick.get(Orientation.LEFT)
+						  - delta.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT)) / trackWidth);
+		//compensates for previous error
+		Angle diff = Geometry.subtract(Geometry.add(Angle.radian((last.get(Orientation.LEFT) * unitPerTick.get(Orientation.LEFT)
+						  - last.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT)) / trackWidth), startPose.angle), this.pose.angle);
+		phi = Geometry.add(diff, phi);
+		return phi;
+	}
     /// Updates the Φ (Δθ) value based on the heading supplier.
     /// @return The new Φ value
     private Angle phiHeading() {
@@ -359,11 +358,13 @@ public class Odometry implements DataLogger {
     ///
     /// If the perpendicular encoder is not set, will always return 0.
     /// @return The perpendicular displacement.
-    private double perpendicularDisplacement() {
-        if (encoder.containsKey(Orientation.PERPENDICULAR))
-            return delta.get(Orientation.PERPENDICULAR) - (displacement.get(Orientation.PERPENDICULAR).y() * phi.radian());
-        return 0.0;
-    }
+	private double perpendicularDisplacement() {
+		if (encoder.containsKey(Orientation.PERPENDICULAR))
+			return delta.get(Orientation.PERPENDICULAR)
+				 - (displacement.get(Orientation.PERPENDICULAR).y() * phi.radian())
+				   / unitPerTick.get(Orientation.PERPENDICULAR);
+		return 0.0;
+	}
 
     /// Calculates the current [Pose] of the robot based on encoder measurements and the last calculated pose.
     /// @return The calculated pose

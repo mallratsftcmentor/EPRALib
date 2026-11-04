@@ -41,7 +41,7 @@ public class    PolyGroup implements Shape2D {
     public double perimeter() {
         double perimeter = 0.0;
         for (Shape2D component : components) {
-            perimeter += component.area();
+            perimeter += component.perimeter();
         }
         return perimeter;
     }
