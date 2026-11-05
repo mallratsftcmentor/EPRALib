@@ -389,7 +389,7 @@ public class DriveTrain {
     /// @see DriveType#ARCADE
     public void arcadeDrive(double powerX, double powerY) {
         double powerRight = powerY + powerX;
-        double powerLeft = powerX - powerY;
+        double powerLeft = powerY - powerX;
 /*
         powerLeft = (powerY > -0.5 && powerX < 0.5) ? 0 : powerLeft;
         powerRight = (powerX > -0.1 && powerY < 0.1) ? powerLeft : powerRight;
