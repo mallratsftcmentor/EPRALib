@@ -390,8 +390,10 @@ public class DriveTrain {
     public void arcadeDrive(double powerX, double powerY) {
         double powerRight = powerY + powerX;
         double powerLeft = powerX - powerY;
+/*
         powerLeft = (powerY > -0.5 && powerX < 0.5) ? 0 : powerLeft;
         powerRight = (powerX > -0.1 && powerY < 0.1) ? powerLeft : powerRight;
+*/
         tankDrive(powerRight, powerLeft);
     }
 

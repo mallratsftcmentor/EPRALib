@@ -232,11 +232,10 @@ public class PIDController {
                 pidData.get(id).saveError = currentError;
             }
             double p = currentError * pidData.get(id).kp;
-            double i = currentError * timeElapsed * pidData.get(id).ki;
-            double d =  ((currentError - pidData.get(id).saveError) / timeElapsed) * pidData.get(id).kd;
+            pidData.get(id).i += currentError * timeElapsed * pidData.get(id).ki;   // accumulate
+            double d = ((currentError - pidData.get(id).saveError) / timeElapsed) * pidData.get(id).kd;
             pidData.get(id).saveError = currentError;
-            pidData.get(id).i = i;
-            pidData.get(id).output = p + i + d;
+            pidData.get(id).output = p + pidData.get(id).i + d;
         }
         return true;
     }

@@ -114,8 +114,9 @@ public class RollingAverage {
      * @param target The target value to test for.
      * @return True if the buffer should be cleared.*/
     public static boolean noChangeThreshold(Double[] buffer, int threshold, double target) {
-        for (int i = 2; i < threshold; i++) { if (buffer[buffer.length - i] != target) { return true; } }
-        return false;
+        if (buffer.length < threshold) return false;
+        for (int i = 1; i <= threshold; i++) { if (buffer[buffer.length - i] != target) { return false; } }
+        return true;
     }
     /**Determines if recent averages have all been the same, suggesting that the buffer should be cleared.
      * @param buffer The buffer of averages.
@@ -146,13 +147,13 @@ public class RollingAverage {
             averageBuffer.add(getAverage());
         }
         if (buffer.size() > autoClearThreshold) {
-            switch (thresholdType) {
-                case NO_CHANGE -> buffer.toArray();
-                case NO_CHANGE_ZERO -> buffer.toArray();
-                case NO_CHANGE_AVERAGE -> averageBuffer.toArray();
-                case NONE -> {
-                }
-            }
+            boolean clear = switch (thresholdType) {
+                case NO_CHANGE         -> noChangeThreshold(buffer.toArray(new Double[0]), autoClearThreshold);
+                case NO_CHANGE_ZERO    -> noChangeThreshold(buffer.toArray(new Double[0]), autoClearThreshold, 0.0);
+                case NO_CHANGE_AVERAGE -> averageThreshold(averageBuffer.toArray(new Double[0]));
+                case NONE              -> false;
+            };
+            if (clear) { buffer.clear(); averageBuffer.clear(); }
         }
         return getAverage();
     }

@@ -17,13 +17,13 @@ public interface FieldMap {
     }
 
     /**Map of all sections and associated component.*/
-    Map<FieldSection, Shape2D> map = new HashMap<>();
-    Shape2D obstacle = null;
+    Map<Section, Shape2D> map();
+    Shape2D obstacle();
 
     /**@param point Point to check.
      * @return Which section of the field the point falls into. Returns DOES_NOT_EXIST if the point doesn't fall into any section of the field.*/
     default Section checkPoint(Vector point) {
-        for (Map.Entry<FieldSection, Shape2D> entry : map.entrySet()) {
+        for (Map.Entry<Section, Shape2D> entry : map().entrySet()) {
             if (entry.getValue().checkPoint(point)) { return entry.getKey(); }
         }
         return FieldSection.DOES_NOT_EXIST;
@@ -32,6 +32,7 @@ public interface FieldMap {
     /**@param point Point to check.
      * @return True if the point is hitting an obstacle, false if not.*/
     default boolean checkObstacle(Vector point) {
-        return obstacle.checkPoint(point);
+        Shape2D o = obstacle();
+        return o != null && o.checkPoint(point);
     }
 }

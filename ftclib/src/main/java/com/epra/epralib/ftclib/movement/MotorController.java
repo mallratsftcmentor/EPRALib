@@ -380,7 +380,8 @@ public class MotorController implements Motor, DataLogger {
     public boolean powerEnabled() { return motor.powerEnabled(); }
     /// {@inheritDoc}
     /// @param power {@inheritDoc}
-    public void setPower(double power) { motor.setPower(power + ((positionMonitoringEnabled()) ? (holdPow * getCurrentPosition()) : 0)); }
+    public void setPower(double power) { motor.setPower(power + (positionMonitoringEnabled() ? holdPow : 0)); }
+
     /// Stops the wrapped motor by setting its power to 0.
     /// @see #setPower(double)
     public void stop() { motor.setPower(0.0); }
@@ -542,11 +543,11 @@ public class MotorController implements Motor, DataLogger {
             lastPIDTOutput = p;
             double power = Math.min(Math.abs(p), maxPower) * Math.signum(p);
             if (Math.abs(p) >= (tolerance * Math.abs(lastTarget - targetPosition))) {
-                setPower(power + (holdPow * getCurrentPosition()));
+                setPower(power);
                 return false;
             } else {
                 if (haltAtTarget) {
-                    setPower(holdPow * getCurrentPosition());
+                    setPower(0.0);
                 }
                 PIDController.idle(id + "_T");
                 return true;

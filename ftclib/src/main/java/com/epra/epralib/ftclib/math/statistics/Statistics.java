@@ -32,7 +32,7 @@ public class Statistics {
     public static double[] differentiate(double[] set) {
         double[] r = new double[set.length];
         r[0] = set[1] - set[0];
-        r[set.length - 1] = r[set.length - 1] - r[set.length - 2];
+        r[set.length - 1] = (set[set.length - 1] - set[set.length - 2]) / (time[set.length - 1] - time[set.length - 2]);
         for (int i = 1; i < set.length - 1; i++) {
             r[i] = (set[i + 1] - set[i - 1]) / 2;
         }
@@ -43,7 +43,7 @@ public class Statistics {
      * @return The array of the derivative.*/
     public static double[] differentiate(double[] set, long[] time) {
         double[] r = new double[set.length];
-        r[0] = set[1] - set[0];
+        r[0] = (set[1] - set[0]) / (time[1] - time[0]);
         r[set.length - 1] = r[set.length - 1] - r[set.length - 2];
         for (int i = 1; i < set.length - 1; i++) {
             r[i] = (set[i + 1] - set[i - 1]) / (time[i + 1] - time[i - 1]);

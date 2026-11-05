@@ -13,7 +13,7 @@ public class ProjectileMotion {
         double deltaZ = target.z() - start.z();
         double deltaXY = Math.sqrt(delta.length() * delta.length() - deltaZ * deltaZ);
         return Math.sqrt((GRAVITY.length() * deltaXY * deltaXY) /
-                (deltaXY * Geometry.sin(Geometry.add(launchAngle, launchAngle)))
-                - (2 * deltaZ * Math.pow(Geometry.cos(launchAngle), 2)));
+                (deltaXY * Geometry.sin(Geometry.add(launchAngle, launchAngle))
+                - 2 * deltaZ * Math.pow(Geometry.cos(launchAngle), 2)));
     }
 }

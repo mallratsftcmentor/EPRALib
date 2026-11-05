@@ -223,12 +223,13 @@ public class DriveTrainAutoModule {
     /// Returns the drive train auto module with its target pose reflected over the x-axis.
     /// @return The drive train auto module reflected over the x-axis
     public DriveTrainAutoModule reflectX() {
-        return new DriveTrainAutoModule(driveMode, maxPower.get(), -x.get(), y.get(), (180 - angle.get()) % 360, posTolerance.get(), angleTolerance.get());
+        return new DriveTrainAutoModule(driveMode, maxPower.get(), x.get(), -y.get(), (-1 * angle.get()) % 360, posTolerance.get(), angleTolerance.get());
     }
     /// Returns the drive train auto module with its target pose reflected over the y-axis.
     /// @return The drive train auto module reflected over the y-axis
     public DriveTrainAutoModule reflectY() {
-        return new DriveTrainAutoModule(driveMode, maxPower.get(), x.get(), -y.get(), (-1 * angle.get()) % 360, posTolerance.get(), angleTolerance.get());
+        return new DriveTrainAutoModule(driveMode, maxPower.get(), -x.get(), y.get(), (180 - angle.get()) % 360, posTolerance.get(), angleTolerance.get());
+
     }
 
     public boolean equals(DriveTrainAutoModule other) {

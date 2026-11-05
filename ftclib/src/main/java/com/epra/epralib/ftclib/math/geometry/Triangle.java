@@ -114,5 +114,9 @@ public class Triangle implements Shape2D{
 
     /**@param point Point to check.
      * @return True if the Vector is within the triangle, false if not.*/
-    public boolean checkPoint(Vector point) { return (new Triangle(a, b, point).area() + new Triangle(b, c, point).area() + new Triangle(c, a, point).area() == this.area()); }
+//    public boolean checkPoint(Vector point) { return (new Triangle(a, b, point).area() + new Triangle(b, c, point).area() + new Triangle(c, a, point).area() == this.area()); }
+    public boolean checkPoint(Vector point) {
+        double sum = new Triangle(a, b, point).area() + new Triangle(b, c, point).area() + new Triangle(c, a, point).area();
+        return Math.abs(sum - this.area()) < 1e-9 * Math.max(1.0, this.area());
+    }
 }

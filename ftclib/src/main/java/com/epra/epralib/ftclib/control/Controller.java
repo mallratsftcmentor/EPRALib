@@ -139,7 +139,8 @@ public class Controller extends Gamepad implements DataLogger {
     /// @param analog Corresponding key for analog
     /// @param power Power to be raised to
     /// @return The float value of the analog, raised to the power
-    public float analogPower(Key analog, float power) { return Math.signum(keys.get(analog).getFloat() * (float)Math.pow(Math.abs(keys.get(analog).getFloat()), power)); }
+//    public float analogPower(Key analog, float power) { return Math.signum(keys.get(analog).getFloat() * (float)Math.pow(Math.abs(keys.get(analog).getFloat()), power)); }
+    public float analogPower(Key analog, float power) {float value = keys.get(analog).getFloat();return Math.signum(value) * (float) Math.pow(Math.abs(value), power);}
     /// Returns the value of [#getAnalog(Stick)], with the length raised to a certain power.
     /// @param joystick Corresponding stick for joystick
     /// @param power Power to be raised to

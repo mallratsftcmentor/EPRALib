@@ -329,16 +329,15 @@ public class Odometry implements DataLogger {
 
     /// Updates the Φ (Δθ) value based on measurements from the encoders.
     /// @return The new Φ value
-	private Angle phiEncoder() {
-		double trackWidth = Math.abs(Geometry.subtract(displacement.get(Orientation.LEFT), displacement.get(Orientation.RIGHT)).x());
-		phi = Angle.radian((delta.get(Orientation.LEFT) * unitPerTick.get(Orientation.LEFT)
-						  - delta.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT)) / trackWidth);
-		//compensates for previous error
-		Angle diff = Geometry.subtract(Geometry.add(Angle.radian((last.get(Orientation.LEFT) * unitPerTick.get(Orientation.LEFT)
-						  - last.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT)) / trackWidth), startPose.angle), this.pose.angle);
-		phi = Geometry.add(diff, phi);
-		return phi;
-	}
+    private Angle phiEncoder() {
+        double trackWidth = Math.abs(Geometry.subtract(displacement.get(Orientation.LEFT), displacement.get(Orientation.RIGHT)).x());
+        Angle encoderHeading = Geometry.add(
+                Angle.radian((last.get(Orientation.LEFT) * unitPerTick.get(Orientation.LEFT)
+                            - last.get(Orientation.RIGHT) * unitPerTick.get(Orientation.RIGHT)) / trackWidth),
+                startPose.angle);
+        phi = Geometry.subtract(encoderHeading, pose.angle);
+        return phi;
+    }
     /// Updates the Φ (Δθ) value based on the heading supplier.
     /// @return The new Φ value
     private Angle phiHeading() {

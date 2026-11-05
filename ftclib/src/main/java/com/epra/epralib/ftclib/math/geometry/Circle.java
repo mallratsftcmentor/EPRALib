@@ -64,13 +64,14 @@ public class Circle implements Shape2D {
     /// @param point The point to check
     /// @return If the point is within the circle or arc
     public boolean checkPoint(Vector point) {
-        if (Geometry.subtract(center, point).length() < radius) {
-            return false;
-        }
+        Vector rel = Geometry.subtract(point, center);      // measure from the circle's center
+        if (rel.length() > radius) return false;
+        if (start.degree() == end.degree()) return true;    // full circle
+        double theta = rel.theta().degree();
         if (end.degree() > start.degree()) {
-            return (point.theta().degree() >= start.degree() && point.theta().degree() <= end.degree());
+            return theta >= start.degree() && theta <= end.degree();
         } else {
-            return (point.theta().degree() <= start.degree() && point.theta().degree() >= end.degree());
+            return theta <= start.degree() && theta >= end.degree();
         }
-    }
+    }    
 }
